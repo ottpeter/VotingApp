@@ -32,6 +32,12 @@ contract VotingApp {
         Counters.Counter totalVoteCount;
     }
 
+    /// A struct that we send to the front end when it asks for list of polls
+    struct IndexWithName {
+        uint index;
+        string name;
+    }
+
     /// An option that is associated to a poll.
     /// optionsStorage stores an array of this object, each Poll has an array
     struct Option {
@@ -135,6 +141,35 @@ contract VotingApp {
         Option[] memory viewedPollOptions = optionsStorage[pollNumber]; // Second element of return array is Options array
 
         return (viewedPoll, viewedPollOptions);                         // Will return [PollView, Option[]]
+    }
+
+    /// Will return a list of pollID->PollName, in a specified range
+    /// @param from Starting poll ID
+    /// @param limit How many polls max
+    function listAll(uint from, uint limit) public view returns(IndexWithName[] memory){
+        require(from < pollNonce.current(), "From index must be smaller then polls.length");
+        uint end = limit;
+        if (from+limit > pollNonce.current()) {
+            end = pollNonce.current();
+        }
+        IndexWithName[] memory resultArray = new IndexWithName[](end);
+
+        for (uint i = from; i < end; i++) {
+            resultArray[i-from] = IndexWithName(i+1,polls[i+1].name);
+        }
+
+        return resultArray;
+    }
+
+    /// Will return a list of pollID->PollName, that are still active
+    function listActive() public view returns(IndexWithName[] memory){
+        IndexWithName[] memory resultArray = new IndexWithName[](activePolls.length);
+
+        for (uint i = 0; i < activePolls.length; i++) {
+            resultArray[i] = IndexWithName(i+1,polls[i+1].name);
+        }
+
+        return resultArray;
     }
 
     function removeExpired() public payable returns(uint64){
