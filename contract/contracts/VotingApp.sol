@@ -94,6 +94,26 @@ contract VotingApp {
         return pollNonce.current();
     }
 
+    /// Any Ethereum address is allowed to vote once
+    /// Returns the current state of the vote
+    /// @param pollId ID of the poll that the user wants to vote on (starting from 1)
+    /// @param selectedOption Index of the option in the options array, that the user wants to vote on (starting from 0)
+    function vote(uint256 pollId, uint256 selectedOption) public payable returns(Option[] memory){
+        require(!hasAlreadyVoted(msg.sender, pollId), "This user has already voted!");
+        require(pollId <= pollNonce.current(), "This poll does not exist!");
+        require(polls[pollId].endTime > block.timestamp, "This poll is expired!");
+        require(optionsStorage[pollId].length > selectedOption, "selectedOption points to a non-existent option (out of range)!");
+
+        alreadyVotedStorage[pollId].push(msg.sender);                   // Add this address to the already voted array
+
+        optionsStorage[pollId][selectedOption].voteCount.increment();   // Increment the vote count for the selected option
+        polls[pollId].totalVoteCount.increment();                       // Increment the total vote count for the poll
+
+        removeExpired();                                                // This will cost some additional gas,
+                                                                        // but activePolls will be more up-to-date (can be removed)
+        return optionsStorage[pollId];
+    }
+
 
     function removeExpired() public payable returns(uint64){
         uint64 numberOfElementsRemoved = 0;
