@@ -23,6 +23,15 @@ contract VotingApp {
         uint256 pollID;                                                 // ID, that connects to alreadyVoted storage and options storage
     }
 
+    /// PollView: This will be returned on the front end
+    struct PollView {
+        string name;
+        string description;
+        uint256 createdTime;         // unix timestamp
+        uint256 endTime;             // unix timestamp. Before 2109
+        Counters.Counter totalVoteCount;
+    }
+
     /// An option that is associated to a poll.
     /// optionsStorage stores an array of this object, each Poll has an array
     struct Option {
@@ -114,6 +123,19 @@ contract VotingApp {
         return optionsStorage[pollId];
     }
 
+    /// Will return all data for a single poll object, that consist of the PollView object and a separated options object
+    /// @param pollNumber ID of the poll
+    function viewPoll(uint pollNumber) public view returns(PollView memory, Option[] memory){
+        PollView memory viewedPoll;                                     // First element of return array is PollView object
+        viewedPoll.name = polls[pollNumber].name;
+        viewedPoll.description = polls[pollNumber].description;
+        viewedPoll.createdTime = polls[pollNumber].createdTime;
+        viewedPoll.endTime = polls[pollNumber].endTime;
+        viewedPoll.totalVoteCount = polls[pollNumber].totalVoteCount;
+        Option[] memory viewedPollOptions = optionsStorage[pollNumber]; // Second element of return array is Options array
+
+        return (viewedPoll, viewedPollOptions);                         // Will return [PollView, Option[]]
+    }
 
     function removeExpired() public payable returns(uint64){
         uint64 numberOfElementsRemoved = 0;
