@@ -56,4 +56,17 @@ contract VotingApp {
 
         return numberOfElementsRemoved;
     }
+
+    function hasAlreadyVoted(address voter, uint256 pollId) internal view returns(bool){
+        address[] memory addressArray = alreadyVotedStorage[pollId];
+
+        for (uint64 i = 0; i < addressArray.length; i++) {
+            if (addressArray[i] == voter) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
