@@ -40,4 +40,20 @@ contract VotingApp {
     constructor() {
         pollNonce = Counters.Counter(0);
     }
+
+
+    function removeExpired() public payable returns(uint64){
+        uint64 numberOfElementsRemoved = 0;
+
+        for (uint64 i = 0; i < activePolls.length; i++) {
+            uint256 currentPollId = activePolls[i];
+            if (polls[currentPollId].endTime < block.timestamp) {
+                delete activePolls[i];
+                numberOfElementsRemoved++;
+                i--;
+            }
+        }
+
+        return numberOfElementsRemoved;
+    }
 }
