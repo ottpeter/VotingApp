@@ -147,7 +147,7 @@ contract VotingApp {
     /// @param from Starting poll ID
     /// @param limit How many polls max
     function listAll(uint from, uint limit) public view returns(IndexWithName[] memory){
-        require(from < pollNonce.current(), "From index must be smaller then polls.length");
+        require(from <= pollNonce.current(), "From index must be smaller then polls.length");
         uint end = limit;
         if (from+limit > pollNonce.current()) {
             end = pollNonce.current();
@@ -198,5 +198,4 @@ contract VotingApp {
 
         return false;
     }
-
 }
