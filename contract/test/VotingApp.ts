@@ -279,5 +279,16 @@ describe("VotingApp", function () {
 
       await expect(votingApp.listAll(4,10)).to.be.rejectedWith("From index must be smaller then polls.length");
     });
+
+    it('listActive should give correct list of polls', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll("First Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Second Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      expect(JSON.stringify(parseList(await votingApp.listActive()))).to.be.equal(JSON.stringify(listWithThreeElement()));
+    });
   });
 });
