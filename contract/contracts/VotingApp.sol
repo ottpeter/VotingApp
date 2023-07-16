@@ -55,7 +55,6 @@ contract VotingApp {
         pollNonce = Counters.Counter(0);
     }
 
-
     /// This will create a new Poll object, based on data that will come from the front end
     /// Returns the poll ID
     /// @param name Name of the poll
@@ -68,10 +67,10 @@ contract VotingApp {
         uint256 end,
         string[] calldata options
     ) public payable returns(uint256) {
-        require(bytes(name).length < MAX_NAME_LENGTH, string(abi.encodePacked("The max length for the title is ", MAX_NAME_LENGTH)));
-        require(bytes(desc).length < MAX_DESC_LENGTH, string(abi.encodePacked("The max length for the description is ", MAX_DESC_LENGTH)));
+        require(bytes(name).length < MAX_NAME_LENGTH, "The title is too long!");
+        require(bytes(desc).length < MAX_DESC_LENGTH, "The description is too long!");
         require(end > block.timestamp, "Expiration date has to be bigger then current time!");
-        require(options.length < MAX_OPTION_NUM, string(abi.encodePacked("The max number of options ", MAX_OPTION_NUM)));
+        require(options.length < MAX_OPTION_NUM, "Too many options were provided for the poll!");
 
         // We increment poll nonce. First ID will be 1
         pollNonce.increment();
@@ -91,7 +90,7 @@ contract VotingApp {
         for (uint16 i = 0; i < options.length; i++) {
             require(
                 bytes(options[i]).length < MAX_OPTION_LENGTH,
-                string(abi.encodePacked("The max length for an option is ", MAX_OPTION_LENGTH))
+                "Some of the option string is too long!"
             );
 
             Option memory tempOption = Option(
