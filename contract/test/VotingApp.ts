@@ -55,6 +55,14 @@ describe("VotingApp", function () {
       }
     ]
   }
+
+  function listWithThreeElement() {
+    return {
+      "1": "First Poll",
+      "2": "Second Poll",
+      "3": "Third Poll"
+    }
+  }
   
   function parsePollView([x, y]) {
     const result = {
@@ -68,6 +76,13 @@ describe("VotingApp", function () {
         voteCount: Number(value[1][0])
       }))
     }
+
+    return result;
+  }
+
+  function parseList(input: VotingApp.IndexWithNameStructOutput[]) {
+    const result = {};
+    input.map((element) => result[element[0]] = element[1]);
 
     return result;
   }
@@ -234,13 +249,35 @@ describe("VotingApp", function () {
     });
 
     it('viewPoll should give out-of-range error for non-existent poll', async function() {
-      const { votingApp, otherAccount, thirdAccount } = await loadFixture(defaultFixture);
+      const { votingApp } = await loadFixture(defaultFixture);
 
       const inputArgs = createTestPollArgs();
       await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
 
       await votingApp.vote(1, 0);
       await expect(votingApp.viewPoll(2)).to.be.revertedWith("That poll does not exist (out-of-range)!");
+    });
+
+    it('listAll should give correct list of polls', async function() {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll("First Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Second Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      expect(JSON.stringify(parseList(await votingApp.listAll(0, 10)))).to.be.equal(JSON.stringify(listWithThreeElement()));
+    });
+
+    it('listAll should give out-of-range error if start is higher than current nonce', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll("First Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Second Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+      await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      await expect(votingApp.listAll(4,10)).to.be.rejectedWith("From index must be smaller then polls.length");
     });
   });
 });
