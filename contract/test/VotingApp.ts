@@ -4,6 +4,10 @@ import {
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
+function sleep(ms: Number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 describe("VotingApp", function () {
 
@@ -30,6 +34,46 @@ describe("VotingApp", function () {
 
     return inputArgs;
   }
+
+  function defaultOptionsObject() {
+    return [
+      {
+        optionName: "Alice", 
+        voteCount: 0
+      },
+      {
+        optionName: "Bob",
+        voteCount: 0
+      },
+      {
+        optionName: "Carol",
+        voteCount: 0
+      },
+      {
+       optionName: "Diana",
+       voteCount: 0
+      }
+    ]
+  }
+
+  
+  function parsePollView([x, y]) {
+    const result = {
+      name: x[0],
+      description: x[1],
+      start: x[2],
+      end: x[3],
+      totalVoteCount: Number(x[4][0]),
+      options: y.map((value) => ({
+        optionName: value[0],
+        voteCount: Number(value[1][0])
+      }))
+    }
+
+    return result;
+  }
+
+
 
   describe('After deployment', function () {
     it('List of polls should be empty', async function () {
@@ -108,4 +152,54 @@ describe("VotingApp", function () {
     });
   });
 
+  describe('Vote on Poll', async function () {
+    it('User should be able to vote and result should change', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      const afterVote = defaultOptionsObject();                               // This will be an options array,
+      afterVote[0].voteCount = 1;                                             // where vote count for Alice is 1
+
+      await votingApp.vote(1, 0);
+
+      const rawPollView = await votingApp.viewPoll(1);
+      const pollData = parsePollView(rawPollView);
+
+      expect(JSON.stringify(pollData.options)).to.be.equal(JSON.stringify(afterVote));
+      expect(pollData.totalVoteCount).to.be.equal(1);
+    });
+
+    it('User should not be allowed to vote on expired poll', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      inputArgs.end = Math.floor(new Date().getTime()/1000) + 1;
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+      await sleep(2100);
+
+      await expect(votingApp.vote(1,0)).to.be.revertedWith("This poll is expired!");
+    });
+
+    it('User should not be able to vote 2 times for the same poll', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      await votingApp.vote(1, 0);
+
+      await expect(votingApp.vote(1,0)).to.be.revertedWith("This user has already voted!");
+    });
+
+    it('Contract should revert when option is out of range', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      await expect(votingApp.vote(1, 4)).to.be.revertedWith("selectedOption points to a non-existent option (out of range)!");
+    });
+  });
 });
