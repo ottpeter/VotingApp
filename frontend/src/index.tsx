@@ -1,15 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import AppRoot from './AppRoot';
+import Dashboard from './pages/Dashboard';
+import History from './pages/History';
+import NotFound from './NotFound';
+import PollDetails from './pages/PollDetails';
+
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppRoot />,
+    loader: () => { console.log("Hello from default loader"); return null },
+    children: [
+      {
+        path: '/dashboard',
+        element: <Dashboard />,
+        loader: () => { console.log("Dashboard loader"); return 1; }
+      },{
+        path: '/history',
+        element: <History />,
+        loader: () => { console.log("History loader"); return 2; }
+      },
+      {
+        path: 'details/:id',
+        element: <PollDetails />,
+        loader: () => { console.log("PollDetails loader"); return 3; }
+      },
+      {
+        path: '/',
+        element: <Navigate to={'/dashboard'} />
+      }
+    ],
+    errorElement: <NotFound />
+  }
+]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
