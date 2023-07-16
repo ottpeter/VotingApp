@@ -13,12 +13,12 @@ describe("VotingApp", function () {
 
   async function defaultFixture() {
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, otherAccount, thirdAccount] = await ethers.getSigners();
 
     const VotingApp = await ethers.getContractFactory("VotingApp");
     const votingApp = await VotingApp.deploy();
 
-    return {votingApp, owner, otherAccount};
+    return {votingApp, owner, otherAccount, thirdAccount};
   }
 
   function createTestPollArgs() {
@@ -55,7 +55,6 @@ describe("VotingApp", function () {
       }
     ]
   }
-
   
   function parsePollView([x, y]) {
     const result = {
@@ -200,6 +199,48 @@ describe("VotingApp", function () {
       await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
 
       await expect(votingApp.vote(1, 4)).to.be.revertedWith("selectedOption points to a non-existent option (out of range)!");
+    });
+  });
+
+  describe('Display functions', async function () {
+    it('viewPoll should display current state of the poll', async function () {
+      const { votingApp, otherAccount, thirdAccount } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+      const optionsObject = defaultOptionsObject();
+
+      const beforeVote = parsePollView(await votingApp.viewPoll(1));
+      expect(beforeVote.name).to.be.equal(inputArgs.name);
+      expect(beforeVote.description).to.be.equal(inputArgs.desc);
+      expect(beforeVote.end).to.be.equal(inputArgs.end);
+      expect(beforeVote.totalVoteCount).to.be.equal(0);
+      expect(JSON.stringify(beforeVote.options)).to.be.equal(JSON.stringify(optionsObject));
+
+      await votingApp.vote(1, 0);                         // Alice
+      await votingApp.connect(otherAccount).vote(1,1);    // Bob
+      await votingApp.connect(thirdAccount).vote(1,2);    // Carol
+
+      optionsObject[0].voteCount = 1;
+      optionsObject[1].voteCount = 1;
+      optionsObject[2].voteCount = 1;
+
+      const afterVote = parsePollView(await votingApp.viewPoll(1));
+      expect(afterVote.name).to.be.equal(inputArgs.name);
+      expect(afterVote.description).to.be.equal(inputArgs.desc);
+      expect(afterVote.end).to.be.equal(inputArgs.end);
+      expect(afterVote.totalVoteCount).to.be.equal(3);
+      expect(JSON.stringify(afterVote.options)).to.be.equal(JSON.stringify(optionsObject));
+    });
+
+    it('viewPoll should give out-of-range error for non-existent poll', async function() {
+      const { votingApp, otherAccount, thirdAccount } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      await votingApp.vote(1, 0);
+      await expect(votingApp.viewPoll(2)).to.be.revertedWith("That poll does not exist (out-of-range)!");
     });
   });
 });

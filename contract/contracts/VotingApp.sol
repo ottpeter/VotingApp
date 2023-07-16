@@ -131,6 +131,9 @@ contract VotingApp {
     /// Will return all data for a single poll object, that consist of the PollView object and a separated options object
     /// @param pollNumber ID of the poll
     function viewPoll(uint pollNumber) public view returns(PollView memory, Option[] memory){
+        require(pollNumber <= pollNonce.current(), "That poll does not exist (out-of-range)!");
+        require(pollNumber != 0, "pollNumber can't be 0");
+
         PollView memory viewedPoll;                                     // First element of return array is PollView object
         viewedPoll.name = polls[pollNumber].name;
         viewedPoll.description = polls[pollNumber].description;
