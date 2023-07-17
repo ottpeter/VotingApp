@@ -1,6 +1,7 @@
 {
   "name": "voting-app",
   "scripts": {
-    "install": "cd contract && npm install && cd ../frontend && npm install"
+    "install": "cd contract && npm install && cd ../frontend && npm install",
+    "build": "cd contract && yarn hardhat compile && npm run copy-abi"
   }
 }

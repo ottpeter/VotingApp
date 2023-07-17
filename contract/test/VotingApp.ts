@@ -64,7 +64,7 @@ describe("VotingApp", function () {
     }
   }
   
-  function parsePollView([x, y]) {
+  function parsePollView([x, y]: [any[], any[][]]) {
     const result = {
       name: x[0],
       description: x[1],

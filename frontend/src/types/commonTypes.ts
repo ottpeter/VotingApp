@@ -5,6 +5,11 @@ export type PollDescription = string;
 export type UnixTimestamp = number;
 export type VoteCount = number;
 
+/** Contract result objects */
+export type PollViewResult = [[], []];
+export type ListAllResult = [PollId, PollName][];
+export type ListActiveResult = [PollId, PollName][];
+
 export interface Option {
   optionName: OptionName;
   voteCount: VoteCount;
@@ -21,4 +26,11 @@ export interface PollElement {
   endTime: UnixTimestamp;
   totalVoteCount: VoteCount;
   options: Option[];
+}
+
+export interface PollInitObject {
+  name: PollName;
+  desc: PollDescription;
+  end: UnixTimestamp;
+  options: OptionName[];
 }

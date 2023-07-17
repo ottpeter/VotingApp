@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         loader: () => { console.log("History loader"); return 2; }
       },
       {
-        path: 'details/:id',
+        path: '/details/:id',
         element: <PollDetails />,
         loader: () => { console.log("PollDetails loader"); return 3; }
       },

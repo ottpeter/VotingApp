@@ -1,0 +1,2 @@
+/** Constant variables */
+export const CONTRACT_ADDRESS = "0x9CAd78b017BF1246F7842A5737F254f49C31F555";

@@ -182,7 +182,9 @@ contract VotingApp {
             if (polls[currentPollId].endTime < block.timestamp) {
                 delete activePolls[i];
                 numberOfElementsRemoved++;
-                i--;
+                if (i > 0) {
+                    i--;
+                }
             }
         }
 
