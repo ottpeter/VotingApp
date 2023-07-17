@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import History from './pages/History';
 import NotFound from './NotFound';
 import PollDetails from './pages/PollDetails';
+import NewPoll from './pages/NewPoll';
 
 
 const router = createBrowserRouter([
@@ -26,9 +27,14 @@ const router = createBrowserRouter([
         loader: () => { console.log("History loader"); return 2; }
       },
       {
+        path: '/new',
+        element: <NewPoll />,
+        loader: () => { console.log("New Poll loader"); return 3; }
+      },
+      {
         path: '/details/:id',
         element: <PollDetails />,
-        loader: () => { console.log("PollDetails loader"); return 3; }
+        loader: () => { console.log("PollDetails loader"); return 4; }
       },
       {
         path: '/',

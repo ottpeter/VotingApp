@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 /** 
@@ -15,6 +17,8 @@ export default function AppRoot() {
         <Outlet />
       </main>
       <Footer />
+
+      <ToastContainer />
     </>
   );
 }

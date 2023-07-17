@@ -7,7 +7,7 @@ export default function Nav() {
       <Link to={'/dashboard'} className="navElement">Dashboard</Link>
       <Link to={'/history'} className="navElement">History</Link>
       <p className="flexGrow"></p>
-      <Link to={'/dashboard'} className="navElement">Something</Link>
+      <Link to={'/new'} className="navElement">Create Poll</Link>
     </nav>
   )
 }

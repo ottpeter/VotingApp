@@ -6,23 +6,30 @@ const abi = abiFile.abi;
 declare let window: any;
 
 
-// Creates a new poll, input parameters are name, description, expiration date, and list of options,
-// which are inside PollInitObject
-export async function createPoll(pollDetails: PollInitObject) {
-  if (!window.ethereum) return;
+export function createPoll(pollDetails: PollInitObject): Promise<TransactionReceipt> {
+  return new Promise(async (resolve, reject) => {
+    if (!window.ethereum) {
+      reject(new Error("window.ethereum is not available"));
+      return;
+    }
   
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const signer = await provider.getSigner();
-  const contract: Contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
-  
-  contract.createPoll(pollDetails.name, pollDetails.desc, pollDetails.end, pollDetails.options)
-  .then((response: TransactionResponse) => {
-    console.log(`TransactionResponse TX hash: ${response.hash}`);
-    return response.wait();
-  })
-  .then((receipt: TransactionReceipt | null) => {
-    if (receipt === null) throw `ERROR! Transaction Receipt is null at createPoll`;
-    console.log("Receipt: ", receipt);
-  })
-  .catch((err: Error) => console.error("There was an error while calling createPoll: ", err));
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const contract: Contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
+
+    try {
+      const response: TransactionResponse = await contract.createPoll(pollDetails.name, pollDetails.desc, pollDetails.end, pollDetails.options);
+      console.log(`TransactionResponse TX hash: ${response.hash}`);
+      const receipt: TransactionReceipt | null = await response.wait();
+      if (receipt === null) {
+        reject(new Error("ERROR! Transaction Receipt is null at createPoll"));
+        return;
+      }
+      console.log("Receipt: ", receipt);
+      resolve(receipt);
+    } catch (err) {
+      console.error("There was an error while calling createPoll: ", err);
+      reject(err);
+    }
+  });
 }
