@@ -1,6 +1,6 @@
 import React from 'react';
 import { PollId, PollName } from '../types/commonTypes';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface ArchivedListElementProps {
   pollId: PollId,

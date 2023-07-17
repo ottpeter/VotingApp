@@ -1,8 +1,27 @@
+:root{
+  --grey-one:   #333333;
+  --grey-two:   #f2ecff;
+  --grey-three: #ababab;
+  --grey-four:  #f2ecff;
+  --yellow:     #f9f871;
+  --color-2:    #4a4857;
+  --white:      #faf7ff;
+
+  --nav-height: 5vh;
+  --footer-height: 10vh;
+  --active-height: 22vh;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 25px;
+
+  --radius-1: 16px;
+  --radius-2: 50px;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Palatino, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -11,3 +30,120 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 var(--space-2) 0 var(--space-2);
+  background-color: var(--grey-one);
+  height: var(--nav-height);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: var(--white);
+  background-color: var(--grey-one);
+  height: var(--footer-height);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  position: fixed;
+  left: 0;
+  top: var(--nav-height);
+  background-color: var(--grey-two);
+  height: calc(100vh - var(--nav-height) - var(--footer-height));
+}
+
+.navElement {
+  padding: calc(var(--nav-height)/6);
+  color: var(--yellow);
+  text-decoration: none;
+  margin-right: var(--space-3);
+}
+.navElement:hover {
+  background-color: var(--color-2);
+}
+
+.flexGrow {
+  flex-grow: 1;
+}
+
+
+/* --- Dashboard --- */
+#dashboard {
+  display: flex;
+  width: 100vw;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+#dashboardTitle {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+#dashboardPollList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 80%;
+  height: 100%;
+  margin-bottom: var(--space-3);
+  list-style-type: none;
+}
+
+/* Dashboard - ActiveListElement */
+.activeListElement {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--color-2);
+  height: var(--active-height);
+  border-radius: var(--radius-1);
+}
+
+.activeListElLeftSide {
+  flex-basis: 40%;
+  padding: var(--space-1);
+}
+
+.activeListElRightSide {
+  flex-basis: 60%;
+  width: 100%;
+  padding: var(--space-2);
+  /*background-color: var(--grey-four);*/
+}
+
+.activeListTitle {
+  color: var(--yellow);
+  font-size: 1.5em;
+}
+
+.activeListDesc {
+  color: var(--white);
+}
+
+#arrowLeft {
+  position: fixed;
+  top: 46%;
+  left: 3vw;
+}
+
+#arrowRight {
+  position: fixed;
+  top: 46%;
+  right: 3vw;
+}
+/* --------- */

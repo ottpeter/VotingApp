@@ -55,6 +55,9 @@ export default function PollDetails() {
         </div>
         <div id="pollDetailsRight">
           <p>{"Visual things here"}</p>
+          {/*<Doughnut data={preparedData} />*/}
+          {/*<PolarArea data={preparedData}/>*/}
+          {/*<Pie data={preparedData} />*/}
         </div>
       </div>
     )
