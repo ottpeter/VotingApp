@@ -5,10 +5,10 @@ import { getPollDetails } from '../utils/viewFunctions';
 import { voteOnPoll } from '../utils/voteOnPoll';
 import { PuffLoader } from 'react-spinners';
 import { generateRandomColor } from '../utils/randomColor';
-import { Chart, ChartOptions, ChartData, ArcElement } from 'chart.js';
+import { Chart, ChartOptions, ChartData, ArcElement, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { toast } from 'react-toastify';
-Chart.register(ArcElement);
+Chart.register(ArcElement, Tooltip);
 
 
 export default function PollDetails() {
@@ -43,7 +43,7 @@ export default function PollDetails() {
       labels: pollData.map((datapoint) => datapoint.optionName),
       datasets: [
           {
-            label: pollDetails.name,  
+            label: "Vote count",  
             data: pollData.map((datapoint) => datapoint.voteCount),
             borderWidth: 1,
             backgroundColor: pollData.map(() => {
@@ -70,7 +70,7 @@ export default function PollDetails() {
     );
   }
 
-  const chartOptions: ChartOptions = {
+  const chartOptions: ChartOptions<"doughnut"> = {
     //indexAxis: 'y', 
     maintainAspectRatio: false, 
     responsive: true,

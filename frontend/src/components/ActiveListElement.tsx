@@ -1,12 +1,10 @@
 import React from 'react';
 import { Option, PollElement, PollId } from '../types/commonTypes';
 import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement, ChartOptions } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement, ChartOptions, Tooltip } from 'chart.js';
 import { useNavigate } from 'react-router-dom';
 import { generateRandomColor } from '../utils/randomColor';
-Chart.register(CategoryScale);
-Chart.register(LinearScale)
-Chart.register(BarElement)
+Chart.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 interface ActiveListElementProps {
   pollElement: PollElement;
@@ -15,6 +13,7 @@ interface ActiveListElementProps {
 
 export default function ActiveListElement({pollElement}: ActiveListElementProps) {
   const navigate = useNavigate();
+  const isMobile =  window.innerWidth <=600;
   
   function pollElementClicked(pollId: Number) {
     navigate(`/details/${pollElement.id}`);
@@ -30,7 +29,7 @@ export default function ActiveListElement({pollElement}: ActiveListElementProps)
     labels: pollData.map((datapoint) => datapoint.optionName),
     datasets: [
         {
-          label: 'Popularity of colours',
+          label: 'Vote count',
           data: pollData.map((datapoint) => datapoint.voteCount),
           borderWidth: 1,
           backgroundColor: pollData.map(() => {
@@ -41,21 +40,23 @@ export default function ActiveListElement({pollElement}: ActiveListElementProps)
     ]
   }
 
-  const chartOptions: ChartOptions = {
+  const chartOptions: ChartOptions<'bar'> = {
     indexAxis: 'y', 
     maintainAspectRatio: false, 
     responsive: true,
     plugins: {
-      legend: {
-        display: false,
-        
-      },
       tooltip: {
         enabled: true,
       },
-      
     },
-    
+    scales: {
+      x: {
+        display: false
+      },
+      y: {
+        display: isMobile
+      }
+    }
   }
 
   return (
