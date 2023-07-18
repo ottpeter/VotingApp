@@ -8,16 +8,15 @@ Chart.register(LinearScale)
 Chart.register(BarElement)
 
 interface ActiveListElementProps {
-  pollID: PollId,
   pollElement: PollElement;
 }
 
 
-export default function ActiveListElement({pollID, pollElement}: ActiveListElementProps) {
+export default function ActiveListElement({pollElement}: ActiveListElementProps) {
   const navigate = useNavigate();
   
   function pollElementClicked(pollId: Number) {
-    navigate(`/details/${pollID}`);
+    navigate(`/details/${pollElement.id}`);
   }
 
   const pollData = pollElement.options.map((option: Option, index: number) => ({
@@ -83,8 +82,8 @@ function generateRandomColor() {
 
   return (
     <li 
-      key={pollID} 
-      onClick={() => pollElementClicked(Number(pollID))}
+      key={pollElement.id} 
+      onClick={() => pollElementClicked(Number(pollElement.id))}
       className="activeListElement"
     >
       <div className="activeListElLeftSide">

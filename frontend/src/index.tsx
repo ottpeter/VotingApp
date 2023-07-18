@@ -22,7 +22,7 @@ const router = createBrowserRouter([
         element: <Dashboard />,
         loader: () => { console.log("Dashboard loader"); return 1; }
       },{
-        path: '/history',
+        path: '/history/:pagenum?',
         element: <History />,
         loader: () => { console.log("History loader"); return 2; }
       },

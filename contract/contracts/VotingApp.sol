@@ -103,7 +103,7 @@ contract VotingApp {
         polls[pollNonce.current()] = newPoll;                           // Add the poll to the polls mapping
         activePolls.push(pollNonce.current());                          // List the poll as active
 
-        removeExpired();                                                // This will cost some additional gas,
+        //removeExpired();                                                // This will cost some additional gas,
                                                                         // but activePolls will be more up-to-date (can be removed)
         return pollNonce.current();
     }
@@ -123,7 +123,7 @@ contract VotingApp {
         optionsStorage[pollId][selectedOption].voteCount.increment();   // Increment the vote count for the selected option
         polls[pollId].totalVoteCount.increment();                       // Increment the total vote count for the poll
 
-        removeExpired();                                                // This will cost some additional gas,
+        //removeExpired();                                                // This will cost some additional gas,
                                                                         // but activePolls will be more up-to-date (can be removed)
         return optionsStorage[pollId];
     }

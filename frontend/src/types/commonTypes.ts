@@ -20,6 +20,7 @@ export interface PollList {
 }
 
 export interface PollElement {
+  id: PollId;
   name: PollName;
   description: PollDescription;
   createdTime: UnixTimestamp;

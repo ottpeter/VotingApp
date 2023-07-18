@@ -19,8 +19,12 @@ export default function ArchivedListElement({pollId, pollName}: ArchivedListElem
   }
 
   return (
-    <div className="archivedListElement" onClick={toDetailsPage}>
-      <p className="archivedListElementTitle">{pollName}</p>
-    </div>
+    <li 
+      key={pollId} 
+      className="archivedListElement" 
+      onClick={toDetailsPage}
+    >
+      <h2 className="archivedListElementTitle">{pollName}</h2>
+    </li>
   )
 }

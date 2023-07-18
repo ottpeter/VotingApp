@@ -16,7 +16,7 @@ export async function getPollDetails(id: PollId) {
   
   const pollResult = await contract.viewPoll(id)
     .then((result: PollViewResult) => {
-      const pollView: PollElement = parsePollView([result[0], result[1]]);
+      const pollView: PollElement = parsePollView(id ,[result[0], result[1]]);
       return pollView;
     })
     .catch((err: Error) => console.error("There was an error while calling viewPoll: ", err));
@@ -62,8 +62,9 @@ export async function getActiveList() {
 
 
 // Will create a single object from the 2 objects that viewPoll gives back
-function parsePollView([PollViewObj, PollOptionsArray]: [any[], any[][]]) {
+function parsePollView(pollID: PollId, [PollViewObj, PollOptionsArray]: [any[], any[][]]) {
   const result = {
+    id: pollID,
     name: PollViewObj[0],
     description: PollViewObj[1],
     createdTime: PollViewObj[2],

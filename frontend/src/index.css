@@ -10,6 +10,7 @@
   --nav-height: 5vh;
   --footer-height: 10vh;
   --active-height: 22vh;
+  --archived-height: 11vh;
   --options-box-height: 25vh;
   --input-width: 80%;
 
@@ -83,9 +84,13 @@ main {
   flex-grow: 1;
 }
 
+#mainTitle {
+  color: var(--grey-one);
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-3);
+}
 
-/* --- Dashboard --- */
-#dashboard {
+#mainContent {
   display: flex;
   width: 100vw;
   height: 100%;
@@ -93,10 +98,7 @@ main {
   flex-direction: column;
 }
 
-#dashboardTitle {
-  margin-top: var(--space-2);
-  margin-bottom: var(--space-3);
-}
+/* --- Dashboard --- */
 
 #dashboardPollList {
   display: flex;
@@ -297,4 +299,30 @@ main {
   justify-content: center;
   align-items: center;
 }
+/* --------- */
+
+
+/* --- History --- */
+#historyPollList {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 100%;
+  margin-bottom: var(--space-3);
+  list-style-type: none;
+}
+
+.archivedListElement {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--color-2);
+  height: var(--archived-height);  
+  border-radius: var(--radius-1);
+  margin-bottom: var(--space-3);
+  color: var(--yellow);
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* --------- */
