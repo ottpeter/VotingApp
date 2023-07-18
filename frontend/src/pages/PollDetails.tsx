@@ -14,6 +14,7 @@ Chart.register(ArcElement);
 export default function PollDetails() {
   const { id } = useParams();
   const pollID: PollId = Number(id);
+  const isMobile =  window.innerWidth <=600;
   const currentUnixTime = Math.floor(new Date().getTime()/1000);
   const [pollDetails, setPollDetails] = useState<PollElement | undefined>(undefined);
   const [data, setData] = useState<ChartData | null>(null);
@@ -94,6 +95,16 @@ export default function PollDetails() {
           <div id="pollDetailsLeft">
             
             <h1 id="pollDetailsTitle" aria-label="Title">{pollDetails.name}</h1>
+            
+            {isMobile && data && (
+              <div id="dougnutContainer">
+                <Doughnut 
+                  data={(data as unknown) as ChartData<"doughnut", any, any>} 
+                  options={chartOptions} className="theChart" 
+                />
+              </div>
+            )}
+            
             <p className="pollDetailsText" aria-label="Description">{pollDetails.description}</p>
 
 
@@ -119,7 +130,7 @@ export default function PollDetails() {
                 <p className="pollDetailsText">{"This poll has ended."}</p>
               )}
           </div>
-          <div id="pollDetailsRight">
+          {!isMobile && <div id="pollDetailsRight">
             {data && (
               <div id="dougnutContainer">
                 <Doughnut 
@@ -128,7 +139,7 @@ export default function PollDetails() {
                 />
               </div>
             )}
-          </div>
+          </div>}
         </div>
 
       ) : (

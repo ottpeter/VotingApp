@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PollElement, PollId, PollInitObject, PollList } from '../types/commonTypes';
 import ActiveListElement from '../components/ActiveListElement';
 import { getActiveList, getPollDetails } from '../utils/viewFunctions';
+import { TfiArrowCircleRight, TfiArrowCircleLeft } from 'react-icons/tfi';
 
 
 export default function Dashboard() {
@@ -78,13 +79,15 @@ export default function Dashboard() {
       {(pollCount > 3) && <div id="arrows">
           {(page > 1) && (
             <button id="arrowLeft" onClick={() => setPage(page-1)}>
-              {"<"}
+              <TfiArrowCircleLeft size={"50px"}/>
             </button>
           )}
+
+          {/*<div className="flexGrow"></div>*/}
           
           {(pollCount > page*3) && (
             <button id="arrowRight" onClick={() => setPage(page+1)}>
-              {">"}
+              <TfiArrowCircleRight size={"50px"}/>
             </button>
           )}
       </div>}

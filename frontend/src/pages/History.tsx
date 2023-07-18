@@ -4,6 +4,7 @@ import ArchivedListElement from '../components/ArchivedListElement';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getIdNameList } from '../utils/viewFunctions';
 import { toast } from 'react-toastify';
+import { TfiArrowCircleRight, TfiArrowCircleLeft } from 'react-icons/tfi';
 
 
 export default function History() {
@@ -55,13 +56,13 @@ export default function History() {
       {(pollList) && <div id="arrows">
           {(currentPage > 1) && (
             <button id="arrowLeft" onClick={() => navigate(`/history/${currentPage-1}`)}>
-              {"<"}
+              <TfiArrowCircleLeft size={"50px"}/>
             </button>
           )}
           
           {(rigtArrow) && (
             <button id="arrowRight" onClick={() => navigate(`/history/${currentPage+1}`)}>
-              {">"}
+              <TfiArrowCircleRight size={"50px"}/>
             </button>
           )}
       </div>}
