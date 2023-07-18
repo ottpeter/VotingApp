@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Option, PollElement, PollId } from '../types/commonTypes';
-import { getActiveList, getIdNameList, getPollDetails } from '../utils/viewFunctions';
+import { getPollDetails } from '../utils/viewFunctions';
 import { voteOnPoll } from '../utils/voteOnPoll';
+import { PuffLoader } from 'react-spinners';
+import { generateRandomColor } from '../utils/randomColor';
+import { Chart, ChartOptions, ChartData, ArcElement } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import { toast } from 'react-toastify';
+Chart.register(ArcElement);
 
 
 export default function PollDetails() {
   const { id } = useParams();
   const pollID: PollId = Number(id);
+  const currentUnixTime = Math.floor(new Date().getTime()/1000);
   const [pollDetails, setPollDetails] = useState<PollElement | undefined>(undefined);
+  const [data, setData] = useState<ChartData | null>(null);
 
   useEffect(() => {
     // Fetch the actual data, we only have a pollID on default
@@ -21,45 +29,120 @@ export default function PollDetails() {
     fetchData();
   }, []);
 
-  async function vote(optinIndex: number) {
-    await voteOnPoll(pollID, optinIndex)
+  useEffect(() => {
+    if (!pollDetails) return;
+
+    const pollData = pollDetails.options.map((option: Option, index: number) => ({
+      id: index,
+      optionName: option.optionName,
+      voteCount: option.voteCount
+    }));
+    
+    const preparedData: ChartData = {
+      labels: pollData.map((datapoint) => datapoint.optionName),
+      datasets: [
+          {
+            label: pollDetails.name,  
+            data: pollData.map((datapoint) => datapoint.voteCount),
+            borderWidth: 1,
+            backgroundColor: pollData.map(() => {
+              const color = generateRandomColor();
+              return color;
+            }),
+          }
+      ]
+    }
+    
+    setData(preparedData as ChartData);
+  }, [pollDetails]);
+
+  function vote(optionIndex: number) {
+    const params = {};
+
+    toast.promise(
+      voteOnPoll(pollID, optionIndex),
+      {
+        pending: "Transaction is pending...",
+        success: "You voted!",
+        error: "There was an error while trying to send the transaction."
+      }
+    );
+  }
+
+  const chartOptions: ChartOptions = {
+    //indexAxis: 'y', 
+    maintainAspectRatio: false, 
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+        
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
   }
 
 
   return (
-    pollDetails? (
-      <div id="pollDetails">
-        <div id="pollDetailsLeft">
-          <p>{pollDetails.name}</p>
-          <p>{pollDetails.description}</p>
-          <ul>
-            {pollDetails.options.map((voteOption: Option, index) => {
-              return (
-                <li key={voteOption.optionName} onClick={() => vote(index)}>
-                  {voteOption.optionName} - {voteOption.voteCount}
-                </li>
-              );
-            })}
-            <p>{"Total Vote Count: "}{pollDetails.totalVoteCount}</p>
-          </ul>
+    <div id="mainContent">
+
+      {pollDetails? (
+
+        <div id="pollDetails">
+          <div id="pollDetailsLeft">
+            
+            <h1 id="pollDetailsTitle" aria-label="Title">{pollDetails.name}</h1>
+            <p className="pollDetailsText" aria-label="Description">{pollDetails.description}</p>
+
+
+            <p className="pollDetailsText">{"Total Vote Count:   "}{pollDetails.totalVoteCount}</p>
+
+              {(pollDetails.endTime > currentUnixTime) ? (
+                <>
+                  <div className="flexGrow"></div>
+                  <h2 className="pollDetails2ndTitle">{"Click on an option to vote!"}</h2>
+                  <ul id="voteList">
+                    {pollDetails.options.map((option: Option, index) => (
+                      <li 
+                        key={index}
+                        className="voteOption"
+                        onClick={() => vote(index)}
+                      >
+                        {option.optionName}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <p className="pollDetailsText">{"This poll has ended."}</p>
+              )}
+          </div>
+          <div id="pollDetailsRight">
+            {data && (
+              <div id="dougnutContainer">
+                <Doughnut 
+                  data={(data as unknown) as ChartData<"doughnut", any, any>} 
+                  options={chartOptions} className="theChart" 
+                />
+              </div>
+            )}
+          </div>
         </div>
-        <div id="pollDetailsRight">
-          <p>{"Visual things here. And so on."}</p>
+
+      ) : (
+
+        <div id="pollDetails" className="centered">
+          <PuffLoader 
+            color={"#f9f871"}
+            size={150}
+            aria-label="Loading..."
+          />
         </div>
-      </div>
-    ) : (
-      <div id="pollDetails">
-        <div id="pollDetailsLeft">
-          <p>{"data is still loading"}</p>
-          <p>{"data is still loading"}</p>
-        </div>
-        <div id="pollDetailsRight">
-          <p>{"Visual things here"}</p>
-          {/*<Doughnut data={preparedData} />*/}
-          {/*<PolarArea data={preparedData}/>*/}
-          {/*<Pie data={preparedData} />*/}
-        </div>
-      </div>
-    )
+
+      )}
+
+    </div>
   )
 }

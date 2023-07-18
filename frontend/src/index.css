@@ -319,10 +319,86 @@ main {
   height: var(--archived-height);  
   border-radius: var(--radius-1);
   margin-bottom: var(--space-3);
-  color: var(--yellow);
+  color: var(--yellow)  ;
+  align-items: center;
+  justify-content: center;
+}
+/* --------- */
+
+
+/* --- Poll Details --- */
+#pollDetails {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  height: 100%;
+  background-color: var(--color-2);
+  border-radius: var(--radius-2);
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-3);  
+}
+
+#pollDetailsLeft {
+  flex-basis: 50%;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+
+#pollDetailsRight {
+  flex-basis: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
+#dougnutContainer {
+  width: 75%;
+  height: 75%;
+}
 
+#pollDetailsTitle {
+  font-size: 2.4em;
+  color: var(--yellow);
+}
+
+.pollDetailsText {
+  font-size: 1.3em;
+  color: var(--white);
+}
+
+.centered {
+  align-items: center;
+  justify-content: center;
+}
+
+.pollDetails2ndTitle {
+  color: var(--white);
+  font-size: 1.4em;
+}
+
+#voteList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style-type: none;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.voteOption {
+  padding: var(--space-2);
+  color: var(--grey-one);
+  border-radius: var(--radius-0);
+  background-color: var(--yellow);
+  margin-bottom: var(--space-2);
+}
 /* --------- */
+
+
+
+/* --- */
+/** Mobile*/
+@media only screen and (max-width: 600px) {
+  
+}
