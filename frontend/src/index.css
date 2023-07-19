@@ -57,9 +57,20 @@ footer {
   background-color: var(--grey-one);
   height: var(--footer-height);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+footer p {
+  margin: 0;
+  margin-bottom: var(--space-1);
+}
+
+.socialIcon {
+  margin-left: var(--space-1);
+  margin-right: var(--space-1);
+  color: var(--white);
 }
 
 main {
