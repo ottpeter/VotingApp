@@ -231,7 +231,6 @@ main {
   padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
@@ -455,6 +454,9 @@ main {
   #newPollContainer {
     width: 95vw;
     max-width: 95vw;
+    height: 200%;
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-3);
   }
 
   #pollDetails {
@@ -467,5 +469,11 @@ main {
     width: 85vw;
     height: auto;
     min-height: 85vw;
+  }
+
+  #newPoll {
+    overflow-y: scroll;
+    align-items: unset;
+    
   }
 }

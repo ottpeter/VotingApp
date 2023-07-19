@@ -9,6 +9,8 @@ import { createPoll } from '../utils/createPoll';
 
 export default function NewPoll() {
   const now = new Date();
+  let scrollStyle: React.CSSProperties = {}  
+  //if (window.innerWidth < 760) {scrollStyle.overflowY =  "scroll"};
   const [title, setTitle] = useState<PollName>("");
   const [desc, setDesc] = useState<PollDescription>("");
   const [end, setEnd] = useState<Date>(now);
@@ -91,7 +93,7 @@ export default function NewPoll() {
   }
 
   return (
-    <div id="newPoll">
+    <div id="newPoll" style={scrollStyle}>
       <div id="newPollContainer">
         <h1 id="newPollTitle">Create a New Poll</h1>
         
