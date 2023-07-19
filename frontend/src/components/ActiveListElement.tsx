@@ -48,6 +48,9 @@ export default function ActiveListElement({pollElement}: ActiveListElementProps)
       tooltip: {
         enabled: true,
       },
+      legend: {
+        display: false
+      }
     },
     scales: {
       x: {
