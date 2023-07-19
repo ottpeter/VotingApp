@@ -5,10 +5,10 @@ import { getPollDetails } from '../utils/viewFunctions';
 import { voteOnPoll } from '../utils/voteOnPoll';
 import { PuffLoader } from 'react-spinners';
 import { generateRandomColor } from '../utils/randomColor';
-import { Chart, ChartOptions, ChartData, ArcElement, Tooltip } from 'chart.js';
+import { Chart, ChartOptions, ChartData, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { toast } from 'react-toastify';
-Chart.register(ArcElement, Tooltip);
+Chart.register(ArcElement, Tooltip, Legend);
 
 
 export default function PollDetails() {
@@ -70,14 +70,19 @@ export default function PollDetails() {
     );
   }
 
+  function createDateString(unixTime: number) {
+    const timeObj = new Date(unixTime*1000);
+    return timeObj.toDateString();
+  }
+
   const chartOptions: ChartOptions<"doughnut"> = {
     //indexAxis: 'y', 
     maintainAspectRatio: false, 
     responsive: true,
     plugins: {
       legend: {
-        display: false,
-        
+        display: false,    
+        position: "right"    
       },
       tooltip: {
         enabled: true,
@@ -107,6 +112,18 @@ export default function PollDetails() {
             
             <p className="pollDetailsText" aria-label="Description">{pollDetails.description}</p>
 
+            {/** Check if the poll expired */}
+            {(pollDetails.endTime > currentUnixTime) ? (
+              <p className="pollDetailsText" aria-label="Expiration Info">
+                {"Will expire: "}
+                {createDateString(Number(pollDetails.endTime))}
+              </p>
+              ) : (
+                <p className="pollDetailsText" aria-label="Expiration Info">
+                  {"Expired: "}
+                  {createDateString(Number(pollDetails.endTime))}
+                </p>
+            )}
 
             <p className="pollDetailsText">{"Total Vote Count:   "}{pollDetails.totalVoteCount}</p>
 
