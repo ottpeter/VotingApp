@@ -1,6 +1,10 @@
 
-Will install both node_modules folders: `npm run install`  
-Will copy artifacts to src folder after compiling : `npm run build`  
+To install node_modules folders in both contract and frontend: `npm run install`  
+To compile smart contract and copy artifacts to src folder: `npm run build`  
 
-`removeExpired()` is currently not connected to the front end, it would be reasonable to periodically call removeExpired() from the back end, to keep it up to date.
-Front end will need to check if a poll expired or not, before displaying.
+Create a .env file inside `contract` folder:  
+```
+INFURA_API_KEY=your_infura_api_key
+SEPOLIA_PRIVATE_KEY=your_sepolia_private_key
+DEVNET_PRIVATE_KEY=your_localhost_private_key_if_deploying_to_localhost
+```
