@@ -1,10 +1,10 @@
 import {
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
+import { expect } from 'chai';
+import { ethers } from 'hardhat';
 
-function sleep(ms: Number) {
+function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -289,6 +289,28 @@ describe("VotingApp", function () {
       await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
 
       expect(JSON.stringify(parseList(await votingApp.listActive()))).to.be.equal(JSON.stringify(listWithThreeElement()));
+    });
+  });
+
+  describe('Events', async function() {
+    it('Emits event on poll creation', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      await expect(votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options))
+        .to.emit(votingApp, 'PollCreated')
+        .withArgs(inputArgs.name, 1);
+    });
+
+    it('Emits event on vote', async function () {
+      const { votingApp } = await loadFixture(defaultFixture);
+
+      const inputArgs = createTestPollArgs();
+      const tx = await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
+
+      await expect(votingApp.vote(1, 0))
+        .to.emit(votingApp, 'VoteCasted')
+        .withArgs(1, tx.from, 0);                                             // Poll ID 1, same signer as poll creator, option 0
     });
   });
 });

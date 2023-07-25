@@ -12,6 +12,11 @@ contract VotingApp {
 
     using Counters for Counters.Counter;
 
+    /// Events
+    event PollCreated(string name, uint pollId);
+    event VoteCasted(uint indexed proposalId, address indexed voter, uint256 indexed option);
+    event RemovedExpired(uint removedNumber);                           // How many polls were removed
+
     /// A poll object, that was initiated by a user
     /// Options and alreadyVoted addresses are not inside this object, but they are linked to it by pollID (alreadyVotedStorage, optionsStorage)
     struct Poll {
@@ -46,7 +51,8 @@ contract VotingApp {
     }
 
     mapping(uint256 => Poll) polls;
-    uint256[] public activePolls;                                       // list of pollIDs that are still active (endTime greater than current time). Needs to be refreshed periodically
+    uint256[] public activePolls;                                       // list of pollIDs that are active (endTime greater than current time)
+                                                                        // Needs to be refreshed periodically
     mapping(uint256 => Option[]) optionsStorage;                        // Options associated to a poll
     mapping(uint256 => address[]) alreadyVotedStorage;                  // List of addresses that already voted on a Poll
     Counters.Counter private pollNonce;                                 // This is used as pollId (current nonce points to last created poll)
@@ -105,6 +111,9 @@ contract VotingApp {
 
         //removeExpired();                                                // This will cost some additional gas,
                                                                         // but activePolls will be more up-to-date (can be removed)
+
+        emit PollCreated(name, pollNonce.current());
+
         return pollNonce.current();
     }
 
@@ -125,6 +134,9 @@ contract VotingApp {
 
         //removeExpired();                                                // This will cost some additional gas,
                                                                         // but activePolls will be more up-to-date (can be removed)
+
+        emit VoteCasted(pollId, msg.sender, selectedOption);
+
         return optionsStorage[pollId];
     }
 
@@ -187,6 +199,8 @@ contract VotingApp {
                 }
             }
         }
+
+        emit RemovedExpired(numberOfElementsRemoved);
 
         return numberOfElementsRemoved;
     }
