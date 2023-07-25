@@ -161,15 +161,19 @@ contract VotingApp {
     /// @param from Starting poll ID
     /// @param limit How many polls max
     function listAll(uint from, uint limit) public view returns(IndexWithName[] memory){
-        require(from <= pollNonce.current(), "From index must be smaller then polls.length");
-        uint end = limit;
-        if (from+limit > pollNonce.current()) {
-            end = pollNonce.current();
-        }
-        IndexWithName[] memory resultArray = new IndexWithName[](end);
+        require(from > 0, "From index can't be 0");
 
-        for (uint i = from; i < end; i++) {
-            resultArray[i-from] = IndexWithName(i+1,polls[i+1].name);
+        uint how_many = limit;
+        if (from+(limit-1) > pollNonce.current()) {
+            how_many = pollNonce.current() + 1 - from;
+        }
+        IndexWithName[] memory resultArray = new IndexWithName[](how_many);
+        if (pollNonce.current() == 1) {                                 // Empty array
+            return resultArray;
+        }
+
+        for (uint i = 0; i < how_many; i++) {
+            resultArray[i] = IndexWithName((from+i),polls[from+i].name);
         }
 
         return resultArray;

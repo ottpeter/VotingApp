@@ -93,7 +93,7 @@ describe("VotingApp", function () {
     it('List of polls should be empty', async function () {
       const { votingApp } = await loadFixture(defaultFixture);
 
-      expect((await votingApp.listAll(0, 10)).length).to.equal(0);
+      expect((await votingApp.listAll(1, 10)).length).to.equal(0);
       expect((await votingApp.listActive()).length).to.be.equal(0);
     });
   });
@@ -106,7 +106,7 @@ describe("VotingApp", function () {
 
       await votingApp.createPoll(inputArgs.name, inputArgs.desc, inputArgs.end, inputArgs.options);
 
-      expect((await votingApp.listAll(0, 10)).length).to.equal(1);
+      expect((await votingApp.listAll(1, 10)).length).to.equal(1);
       expect((await votingApp.listActive()).length).to.be.equal(1);
     });
 
@@ -266,10 +266,10 @@ describe("VotingApp", function () {
       await votingApp.createPoll("Second Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
       await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
 
-      expect(JSON.stringify(parseList(await votingApp.listAll(0, 10)))).to.be.equal(JSON.stringify(listWithThreeElement()));
+      expect(JSON.stringify(parseList(await votingApp.listAll(1, 10)))).to.be.equal(JSON.stringify(listWithThreeElement()));
     });
 
-    it('listAll should give out-of-range error if start is higher than current nonce', async function () {
+    it('listAll should give empty array if start is higher than current nonce', async function () {
       const { votingApp } = await loadFixture(defaultFixture);
 
       const inputArgs = createTestPollArgs();
@@ -277,7 +277,7 @@ describe("VotingApp", function () {
       await votingApp.createPoll("Second Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
       await votingApp.createPoll("Third Poll", inputArgs.desc, inputArgs.end, inputArgs.options);
 
-      await expect(votingApp.listAll(4,10)).to.be.rejectedWith("From index must be smaller then polls.length");
+      await expect(JSON.stringify(parseList(await votingApp.listAll(4,10)))).to.be.equal(JSON.stringify({}));
     });
 
     it('listActive should give correct list of polls', async function () {

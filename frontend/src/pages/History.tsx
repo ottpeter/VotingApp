@@ -21,7 +21,7 @@ export default function History() {
     setRightArrow(false);
     
     const fetch = async () => {
-      const result = await getIdNameList(0, LIMIT);
+      const result = await getIdNameList(1, LIMIT);
       if (result === undefined) toast.error("There was en error while fetching poll list. Most likely those polls don't exist yet.");
       const resultList = (result as unknown) as PollList;                                           // All results
 
