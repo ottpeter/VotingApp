@@ -15,26 +15,21 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <AppRoot />,
-    loader: () => { console.log("Hello from default loader"); return null },
     children: [
       {
         path: '/dashboard',
-        element: <Dashboard />,
-        loader: () => { console.log("Dashboard loader"); return 1; }
+        element: <Dashboard />
       },{
         path: '/history/:pagenum?',
-        element: <History />,
-        loader: () => { console.log("History loader"); return 2; }
+        element: <History />
       },
       {
         path: '/new',
-        element: <NewPoll />,
-        loader: () => { console.log("New Poll loader"); return 3; }
+        element: <NewPoll />
       },
       {
         path: '/details/:id',
-        element: <PollDetails />,
-        loader: () => { console.log("PollDetails loader"); return 4; }
+        element: <PollDetails />
       },
       {
         path: '/',
@@ -48,11 +43,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-);
+root.render(<RouterProvider router={router} />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

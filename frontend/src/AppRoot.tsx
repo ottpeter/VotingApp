@@ -39,7 +39,7 @@ export default function AppRoot() {
   }, []);
 
   
-
+console.log("AppRoot loading...")
   return(
     <>
       <Nav />
